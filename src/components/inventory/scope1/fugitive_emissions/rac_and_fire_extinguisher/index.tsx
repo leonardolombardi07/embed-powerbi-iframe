@@ -61,38 +61,7 @@ function OptionSelect({
           hideOnOutsideClick={true}
           showTitle={true}
           title="Sobre opções"
-          contentRender={function PopupContent() {
-            return (
-              <ScrollView width="100%" height="100%">
-                <h3>Opção 1.</h3>
-                <p>
-                  Abordagem por estágio do ciclo de vida. - Unidades novas são
-                  aquelas instaladas durante o ano inventariado. Para unidades
-                  novas, só devem ser contabilizados os dados de carga para
-                  unidades compradas vazias. Não inclua dados para unidades
-                  novas que foram pré-carregadas pelo fabricante. - Unidades
-                  dispensadas são unidades que foram dispensadas/descartadas
-                  durante o ano inventariado. - Unidades existentes são todas as
-                  outras unidades que não as novas e dispensadas. - Carga /
-                  Recarga = gás adicionado a unidades pela organização ou
-                  fornecedor (não inclua pré-cargas feitas pelo fabricante). -
-                  Capacidade = a soma das capacidades de todas as unidades (não
-                  inclua pré-cargas feitas pelo fabricante). - Quantidade
-                  Recuperada = total de gás recuperado de todas as unidades
-                  dispensadas O cálculo utiliza a equação: E = (EUN + EUE + EUD)
-                  * GWP, em que: E = emissões em CO2e (kg); EUN = emissões da
-                  instalação de novas unidades: gás usado para carregar o
-                  equipamento novo menos capacidade do equipamento (a diferença
-                  corresponde às perdas para a atmosfera); EUE = gás adicionado
-                  a unidades existentes como manutenção pela organização ou
-                  fornecedor (não inclui pré-cargas feitas pelo fabricante); EUD
-                  = emissões do descarte de unidades antigas: capacidade da
-                  unidade dispensada menos a quantidade de gás recuperada (a
-                  diferença corresponde às perdas para a atmosfera).
-                </p>
-              </ScrollView>
-            );
-          }}
+          contentRender={PopupContent}
         />
       </div>
     </div>
@@ -111,6 +80,87 @@ function EditableDataGridFromOption({ option }: { option: Option | null }) {
     default:
       return <NotImplementedMessage />;
   }
+}
+
+function PopupContent() {
+  return (
+    <ScrollView width="100%" height="100%">
+      <Option1Content />
+      <Option1Content />
+      <Option1Content />
+    </ScrollView>
+  );
+}
+
+function Option1Content() {
+  return (
+    <div style={{ marginBottom: "2em" }}>
+      <h3>Opção 1.</h3>
+      <p>
+        <b>Abordagem por estágio do ciclo de vida. </b>
+        <ul style={{ marginLeft: "2em", listStyle: "none" }}>
+          <li>
+            - Unidades novas são aquelas instaladas durante o ano inventariado.
+            Para unidades novas, só devem ser contabilizados os dados de carga
+            para unidades compradas vazias. Não inclua dados para unidades novas
+            que foram pré-carregadas pelo fabricante.
+          </li>
+
+          <li>
+            - Unidades dispensadas são unidades que foram
+            dispensadas/descartadas durante o ano inventariado.
+          </li>
+
+          <li>
+            - Unidades existentes são todas as outras unidades que não as novas
+            e dispensadas.
+            <ul style={{ marginLeft: "2em", listStyle: "none" }}>
+              <li>
+                - Carga / Recarga = gás adicionado a unidades pela organização
+                ou fornecedor (não inclua pré-cargas feitas pelo fabricante).{" "}
+              </li>
+              <li>
+                - Capacidade = a soma das capacidades de todas as unidades (não
+                inclua pré-cargas feitas pelo fabricante).
+              </li>
+              <li>
+                - Quantidade Recuperada = total de gás recuperado de todas as
+                unidades dispensadas
+                <ul style={{ marginLeft: "2em", listStyle: "none" }}>
+                  <li>
+                    O cálculo utiliza a equação:{" "}
+                    <b> E = (EUN + EUE + EUD) * GWP</b>, em que:
+                    <ul style={{ marginLeft: "2em", listStyle: "none" }}>
+                      <li>
+                        <b>E</b> = emissões em CO2e (kg);
+                      </li>
+                      <li>
+                        <b> EUN</b> = emissões da instalação de novas unidades:
+                        gás usado para carregar o equipamento novo menos
+                        capacidade do equipamento (a diferença corresponde às
+                        perdas para a atmosfera);
+                      </li>
+                      <li>
+                        <b>EUE</b> = gás adicionado a unidades existentes como
+                        manutenção pela organização ou fornecedor (não inclui
+                        pré-cargas feitas pelo fabricante);
+                      </li>
+                      <li>
+                        <b>EUD</b> = emissões do descarte de unidades antigas:
+                        capacidade da unidade dispensada menos a quantidade de
+                        gás recuperada (a diferença corresponde às perdas para a
+                        atmosfera).
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </p>
+    </div>
+  );
 }
 
 export default RacAndFireExtinguisher;

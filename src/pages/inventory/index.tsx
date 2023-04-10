@@ -69,22 +69,29 @@ export default function Inventory() {
   );
 }
 
+const COMMON_CARD_STYLE: React.CSSProperties = {
+  width: 290,
+  height: 250,
+  boxShadow: "0 0 0 1px #d4d4d5, 0 2px #767676, 0 1px 3px #d4d4d5",
+  display: "flex",
+  flexDirection: "column",
+  margin: "1em",
+} as const;
+
 function LinkCard() {
   return (
     <Link
       href={"/inventory/create"}
-      style={{ textDecoration: "none", color: "inherit" }}
+      style={{
+        textDecoration: "none",
+        color: "inherit",
+      }}
     >
       <div
         style={{
-          width: 290,
-          height: 250,
-          boxShadow: "0 0 0 1px #d4d4d5, 0 2px #767676, 0 1px 3px #d4d4d5",
-          display: "flex",
-          flexDirection: "column",
+          ...COMMON_CARD_STYLE,
           alignItems: "center",
           justifyContent: "center",
-          margin: "1em",
         }}
       >
         <i className={"dx-icon dx-icon-plus"} style={{ fontSize: "4rem" }}></i>
@@ -100,21 +107,53 @@ function InventoryCard({ inventory }: { inventory: IInventory }) {
       href={`/inventory/${inventory.id}`}
       style={{ textDecoration: "none", color: "inherit" }}
     >
-      <div
-        style={{
-          width: 290,
-          height: 250,
-          boxShadow: "0 0 0 1px #d4d4d5, 0 2px #767676, 0 1px 3px #d4d4d5",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          margin: "1em",
-        }}
-      >
-        <h4 style={{ marginTop: "1em" }}>{inventory.organization.name}</h4>
-        <p>{inventory.responsible.name}</p>
+      <div style={{ ...COMMON_CARD_STYLE, position: "relative" }}>
+        <div style={{ padding: "0.5em", borderBottom: "1px solid lightgrey" }}>
+          <h4>{inventory.organization.name}</h4>
+        </div>
+
+        <div style={{ padding: "1em", height: "100%" }}>
+          <YearLabel value={String(inventory.year)} />
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            position: "sticky",
+            bottom: 0,
+            borderTop: "1px solid lightgrey",
+            padding: "0.5em",
+          }}
+        >
+          <p style={{ marginBottom: "3px" }}>📅 {inventory.submitDate}</p>
+          <p>👷‍♂️ {inventory.responsible.name}</p>
+        </div>
       </div>
     </Link>
+  );
+}
+
+function YearLabel({ value }: { value: string }) {
+  return (
+    <div
+      style={{
+        backgroundColor: "#e8e8e8",
+        color: "rgba(0,0,0,.6)",
+        borderRadius: "0.28rem",
+        fontWeight: 700,
+        padding: "0.5em 0.3em",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        maxWidth: 80,
+      }}
+    >
+      <i
+        className={`dx-icon-event`}
+        style={{ marginRight: "0.5em", fontSize: "18px" }}
+      ></i>
+
+      {value}
+    </div>
   );
 }

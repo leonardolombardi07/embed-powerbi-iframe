@@ -22,7 +22,9 @@ interface GeneralInfoFormData {
 }
 
 interface GeneralInfoFormProps {
-  onAfterValidatedSubmit: (formData: GeneralInfoFormData) => void;
+  onAfterValidatedSubmit: (formData: GeneralInfoFormData) => Promise<{
+    success: boolean;
+  }>;
   submitButtonOptions: {
     text: string;
   };
@@ -40,10 +42,15 @@ function GeneralInfoForm({
 }: GeneralInfoFormProps) {
   const formRef = React.useRef<any>(null);
 
-  function handleValidatedForm(event: React.FormEvent<HTMLFormElement>) {
+  async function handleValidatedForm(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData: GeneralInfoFormData = formRef.current.option("formData");
-    onAfterValidatedSubmit(formData);
+    const { success } = await onAfterValidatedSubmit(formData);
+
+    if (success === false) return;
+    if (formRef.current?.resetValues) {
+      formRef.current.resetValues();
+    }
   }
 
   return (

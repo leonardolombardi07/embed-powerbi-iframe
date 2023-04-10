@@ -69,7 +69,9 @@ export default function InventoryById() {
               RESPONSIBLE_NAME: inventory.responsible.name,
               RESPONSIBLE_PHONE: inventory.responsible.phone,
             }}
-            onAfterValidatedSubmit={() => {}}
+            onAfterValidatedSubmit={async () => {
+              return { success: false };
+            }}
             submitButtonOptions={{ text: "Salvar" }}
           />
         </TabPanelItem>

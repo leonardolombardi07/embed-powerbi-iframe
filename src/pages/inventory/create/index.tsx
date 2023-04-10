@@ -19,8 +19,10 @@ export default function CreateInventory() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       notifyInventoryCreation();
       router.push(`/inventory/5`);
+      return { success: true };
     } catch (error: any) {
       setSubmitError(error.message);
+      return { success: false };
     } finally {
       setIsLoadingSubmit(false);
     }

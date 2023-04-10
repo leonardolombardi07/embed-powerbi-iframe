@@ -11,55 +11,65 @@ import DataGrid, {
 function Option1() {
   return (
     <DataGrid
-      dataSource={[
-        {
-          FirstName: "John",
-          LastName: "Heart",
-          Position: "CEO",
-          Phone: "(213) 555-9392",
-          Email: "leoemail.com",
-        },
-      ]}
-      showBorders={true}
-      columnAutoWidth={true}
-      repaintChangesOnly={true}
+      dataSource={[]}
+      // Appearance
+      columnAutoWidth
+      showBorders
+      showColumnLines
+      showRowLines
+      noDataText="Clique no botão de + para criar um novo registro"
     >
-      <Paging enabled={false} />
-
       <Editing
         mode={"cell"}
-        allowUpdating={true}
-        allowAdding={true}
-        allowDeleting={true}
-        confirmDelete={false}
-        // defaultEditColumnName={"FirstName"}
-        // useIcons={false}
+        allowAdding
+        allowUpdating
+        allowDeleting
+        confirmDelete
       />
 
-      <Column dataField="FirstName">
-        <RequiredRule />
-      </Column>
+      <Column dataField="Country" caption={"Registro da fonte"} />
+      <Column dataField="Area" caption={"Gás ou composto"} />
 
-      <Column dataField="LastName">
-        <RequiredRule />
-      </Column>
-
-      <Column dataField="Position">
-        <RequiredRule />
-      </Column>
-
-      <Column dataField="Phone">
-        <RequiredRule />
-        <PatternRule
-          message={'Your phone must have "(555) 555-5555" format!'}
-          pattern={/^\(\d{3}\) \d{3}-\d{4}$/i}
+      <Column caption="Unidades Novas">
+        <Column
+          dataField="Population_Total"
+          caption="Carga (kg)"
+          format="fixedPoint"
+        />
+        <Column
+          dataField="Population_Urban"
+          caption="Capacidade (kg)"
+          format="percent"
         />
       </Column>
 
-      <Column dataField="Email">
-        <RequiredRule />
-        <EmailRule />
+      <Column caption={"Unidades Existentes"}>
+        <Column
+          dataField="Population_Total"
+          caption="Recarga (kg)"
+          format="fixedPoint"
+        />
       </Column>
+
+      <Column caption="Unidades Dispensadas">
+        <Column
+          dataField="Population_Urban"
+          caption="Capacidade (kg)"
+          format="percent"
+        />
+
+        <Column
+          dataField="Population_Urban"
+          caption="Recuperada (kg)"
+          format="percent"
+        />
+      </Column>
+
+      <Column
+        dataField="Population_Urban"
+        caption="E = Emissões de CO2 e (t)"
+        format="percent"
+      />
     </DataGrid>
   );
 }
