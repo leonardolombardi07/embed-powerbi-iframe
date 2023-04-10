@@ -15,7 +15,6 @@ interface GeneralInfoFormData {
   ORGANIZATION_ADDRESS: string;
 
   INVENTORY_YEAR: number;
-  INVENTORY_SUBMIT_DATE: `${number}/${number}/${number}`;
 
   RESPONSIBLE_NAME: string;
   RESPONSIBLE_PHONE: string;
@@ -103,27 +102,6 @@ function GeneralInfoForm({
               />
               <RequiredRule message="O ano do inventário é obrigatório." />
             </Item>
-
-            <Item
-              dataField={FORM_DATA_NAME.INVENTORY_SUBMIT_DATE}
-              editorOptions={{
-                mask: "DD/MM/YYYY",
-                maskRules: {
-                  D: /[0-9]/,
-                  M: /[0-9]/,
-                  Y: /[0-9]/,
-                },
-                maskInvalidMessage:
-                  "A data de preenchimento deve ser válida e ter o formato DD/MM/AAAA.",
-                placeholder: FORM_DATA_PLACEHOLDERS.INVENTORY_SUBMIT_DATE,
-              }}
-            >
-              <Label
-                render={LabelTemplate("event")}
-                text={"Data de Preenchimento"}
-              />
-              <RequiredRule message="A data de preenchimento é obrigatória." />
-            </Item>
           </GroupItem>
 
           <GroupItem colCount={1} caption="Informações do Responsável">
@@ -189,7 +167,6 @@ const FORM_DATA_NAME: {
   ORGANIZATION_ADDRESS: "ORGANIZATION_ADDRESS",
 
   INVENTORY_YEAR: "INVENTORY_YEAR",
-  INVENTORY_SUBMIT_DATE: "INVENTORY_SUBMIT_DATE",
 
   RESPONSIBLE_NAME: "RESPONSIBLE_NAME",
   RESPONSIBLE_PHONE: "RESPONSIBLE_PHONE",
@@ -215,9 +192,6 @@ const FORM_DATA_PLACEHOLDERS = {
     "Av. Ataulfo de Paiva, 1079 - Leblon, Rio de Janeiro - RJ",
 
   [FORM_DATA_NAME.INVENTORY_YEAR]: INVENTORY_DATA.MAX_YEAR,
-  [FORM_DATA_NAME.INVENTORY_SUBMIT_DATE]: new Date().toLocaleDateString(
-    "pt-BR"
-  ),
 
   [FORM_DATA_NAME.RESPONSIBLE_NAME]: "Leonardo Lombardi",
   [FORM_DATA_NAME.RESPONSIBLE_PHONE]: "(21) 98998-6625",

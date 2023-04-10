@@ -5,6 +5,7 @@ import GeneralInfoForm, {
 } from "@/components/inventory/general";
 import { useRouter } from "next/router";
 import notify from "devextreme/ui/notify";
+import * as Api from "@/services/api";
 
 export default function CreateInventory() {
   const router = useRouter();
@@ -16,9 +17,9 @@ export default function CreateInventory() {
     setIsLoadingSubmit(true);
     setSubmitError("");
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const id = await Api.createInventory(formDataToInventoryDTO(formData));
       notifyInventoryCreation();
-      router.push(`/inventory/5`);
+      router.push(`/inventory/${id}`);
       return { success: true };
     } catch (error: any) {
       setSubmitError(error.message);
@@ -64,4 +65,20 @@ function notifyInventoryCreation() {
     },
     { position: "bottom right", direction: "left-push" }
   );
+}
+
+function formDataToInventoryDTO(
+  formData: GeneralInfoFormData
+): Api.CreateInventoryForm {
+  return {
+    year: formData.INVENTORY_YEAR,
+    organization: {
+      address: formData.ORGANIZATION_ADDRESS,
+      name: formData.ORGANIZATION_NAME,
+    },
+    responsible: {
+      name: formData.RESPONSIBLE_NAME,
+      phone: formData.RESPONSIBLE_PHONE,
+    },
+  };
 }

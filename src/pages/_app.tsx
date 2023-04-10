@@ -10,12 +10,15 @@ import Link from "next/link";
 import Logo from "@/design-system/components/Logo";
 import Button from "devextreme-react/button";
 import { capitalizeFirstLetter } from "@/utils/text";
+import { UserProvider } from "@/components/pages/__app";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <UserProvider>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </UserProvider>
   );
 }
 
@@ -77,7 +80,6 @@ function useBreadcrumbs() {
 
   const crumblist = subpaths.map((subpath, index) => {
     const href = "/" + subpaths.slice(0, index + 1).join("/");
-    console.log(subpath);
     const translatedSubpath = translateSubpath(subpath);
     return { href, text: capitalizeFirstLetter(translatedSubpath) };
   });

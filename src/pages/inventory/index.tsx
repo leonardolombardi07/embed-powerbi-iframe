@@ -3,58 +3,86 @@ import { Inventory as IInventory } from "@/types";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
+import LoadPanel from "devextreme-react/load-panel";
+
+import * as Api from "@/services/api";
 
 export default function Inventory() {
-  const [isFetching, setIsFetching] = React.useState(false);
+  return (
+    <React.Fragment>
+      <Head>
+        <title>Criar Inventário</title>
+        <meta name="description" content="Crie seu inventário" />
+      </Head>
+
+      <InventoryWithoutHead />
+    </React.Fragment>
+  );
+}
+
+function InventoryWithoutHead() {
+  const [isSubscribing, setIsSubscribing] = React.useState(true);
   const [inventories, setInventories] = React.useState<IInventory[]>([]);
-  const [error, setError] = React.useState("");
+  const [error, setError] = React.useState<string | null>(null);
 
-  React.useEffect(() => {
-    async function fetchData() {
-      setIsFetching(true);
-      setError("");
-      try {
-        const response = await fetch(`http://localhost:3000/api/inventories`);
-        const data = await response.json();
-        setInventories(data.inventories as IInventory[]);
-      } catch (error: any) {
+  React.useEffect(function onMount() {
+    const unsubscribe = Api.onInventoriesChange({
+      next: (inventories) => {
+        setInventories(inventories);
+        setError(null);
+        setIsSubscribing(false);
+      },
+      error: (error) => {
         setError(error.message);
-      } finally {
-        setIsFetching(false);
-      }
-    }
+        setIsSubscribing(false);
+      },
+    });
 
-    fetchData();
+    return function onUnmount() {
+      unsubscribe();
+    };
   }, []);
 
-  if (isFetching) {
-    return null;
+  if (isSubscribing) {
+    return (
+      <LoadPanel
+        visible
+        message="Carregando..."
+        showIndicator
+        position={"center"}
+        delay={500}
+        showPane={false}
+      />
+    );
   }
 
   return (
     <React.Fragment>
-      <Head>
-        <title>Inventário</title>
-        <meta name="description" content="Gerencie seus inventários" />
-      </Head>
-
       <main
         style={{
-          padding: "0 1em",
+          padding: "1em",
           display: "flex",
           flexDirection: "row",
           flexWrap: "wrap",
-          justifyContent: "center",
         }}
       >
         <LinkCard />
+
+        {error && (
+          <Message
+            type="error"
+            header="Algum erro ocorreu"
+            content={error}
+            style={{ flex: 1 }}
+          />
+        )}
 
         {inventories.length === 0 ? (
           <Message
             type="info"
             header="Você ainda não possui inventários."
             content={`Clique em "Criar Inventário" para criar seu primeiro inventário.`}
-            style={{ flex: 1, marginLeft: "1em" }}
+            style={{ flex: 1 }}
           />
         ) : (
           inventories.map((inventory) => (
@@ -75,7 +103,7 @@ const COMMON_CARD_STYLE: React.CSSProperties = {
   boxShadow: "0 0 0 1px #d4d4d5, 0 2px #767676, 0 1px 3px #d4d4d5",
   display: "flex",
   flexDirection: "column",
-  margin: "1em",
+  margin: "0 1em 1em",
 } as const;
 
 function LinkCard() {
@@ -125,7 +153,7 @@ function InventoryCard({ inventory }: { inventory: IInventory }) {
             padding: "0.5em",
           }}
         >
-          <p style={{ marginBottom: "3px" }}>📅 {inventory.submitDate}</p>
+          <p style={{ marginBottom: "3px" }}>📅 {inventory.createdAt}</p>
           <p>👷‍♂️ {inventory.responsible.name}</p>
         </div>
       </div>

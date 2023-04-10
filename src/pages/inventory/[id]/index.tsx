@@ -7,41 +7,10 @@ import Message from "@/design-system/components/Message";
 import { useRouter } from "next/router";
 import { Inventory } from "@/types";
 import NotImplementedMessage from "@/components/collections/NotImplementedMessage";
+import LoadPanel from "devextreme-react/load-panel";
+import * as Api from "@/services/api";
 
 export default function InventoryById() {
-  const router = useRouter();
-
-  const [isFetching, setIsFetching] = React.useState(false);
-  const [inventory, setInventory] = React.useState<Inventory | null>(null);
-  const [error, setError] = React.useState("");
-
-  const { id: inventoryId } = router.query;
-
-  React.useEffect(() => {
-    async function fetchData() {
-      setIsFetching(true);
-      setError("");
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/inventory/${inventoryId}`
-        );
-        const data = await response.json();
-        setInventory(data.inventory as Inventory);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setIsFetching(false);
-      }
-    }
-
-    if (!inventoryId) return;
-    else fetchData();
-  }, [inventoryId]);
-
-  if (isFetching || !inventory) {
-    return null;
-  }
-
   return (
     <React.Fragment>
       <Head>
@@ -49,6 +18,77 @@ export default function InventoryById() {
         <meta name="description" content="Crie seu inventário" />
       </Head>
 
+      <InventoryByIdWithoutHead />
+    </React.Fragment>
+  );
+}
+
+function InventoryByIdWithoutHead() {
+  const router = useRouter();
+  const { id: inventoryId } = router.query;
+
+  const [isSubscribing, setIsSubscribing] = React.useState(true);
+  const [inventory, setInventory] = React.useState<Inventory | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(
+    function onMount() {
+      if (typeof inventoryId !== "string" || !inventoryId) {
+        return setError(`Inventário com valor ${inventoryId} inválido.`);
+      }
+
+      const unsubscribe = Api.onInventoryChange(inventoryId, {
+        next: (inventory) => {
+          setInventory(inventory);
+          setError(null);
+          setIsSubscribing(false);
+        },
+        error: (error) => {
+          setError(error.message);
+          setIsSubscribing(false);
+        },
+      });
+
+      return function onUnmount() {
+        unsubscribe();
+      };
+    },
+    [inventoryId]
+  );
+
+  if (isSubscribing) {
+    return (
+      <LoadPanel
+        visible
+        message="Carregando..."
+        showIndicator
+        position={"center"}
+        delay={500}
+        showPane={false}
+      />
+    );
+  }
+
+  // Inventory not loaded, and error occurred
+  // We are doing this check to make sure inventory is not null
+  // before accessing it's properties. But there's probably a better way.
+  if (inventory === null) {
+    // This should be impossible:
+    // if the inventory is null and we are not subscribing, we should have an error.
+    if (!error) return null;
+
+    return (
+      <Message
+        type="error"
+        header="Algum erro ocorreu"
+        content={error}
+        style={{ margin: "1em" }}
+      />
+    );
+  }
+
+  return (
+    <React.Fragment>
       {error && (
         <Message
           type="error"
@@ -64,7 +104,6 @@ export default function InventoryById() {
             initialFormData={{
               ORGANIZATION_NAME: inventory.organization.name,
               ORGANIZATION_ADDRESS: inventory.organization.address,
-              INVENTORY_SUBMIT_DATE: inventory.submitDate as any,
               INVENTORY_YEAR: inventory.year,
               RESPONSIBLE_NAME: inventory.responsible.name,
               RESPONSIBLE_PHONE: inventory.responsible.phone,
