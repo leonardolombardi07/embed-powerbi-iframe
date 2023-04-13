@@ -25,6 +25,14 @@ export default function Home() {
           }}
         />
 
+        <iframe
+          title="Teste Embed - Page 1"
+          width="100%"
+          height="541.25"
+          src="https://app.powerbi.com/reportEmbed?reportId=58cfc9f3-a9b4-4d6b-a3cb-c7a9c64fe1f5&autoAuth=true&ctid=734bc5fb-6500-4a90-8e68-bd98094aae03"
+          style={{ margin: "1em 0" }}
+        ></iframe>
+
         <Message
           type="info"
           header="Você ainda não possui inventários."
